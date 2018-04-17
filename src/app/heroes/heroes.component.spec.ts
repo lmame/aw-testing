@@ -3,6 +3,14 @@ import { HeroService } from './../hero.service';
 import { HeroesComponent } from './heroes.component';
 import { of } from 'rxjs/observable/of';
 
+/*
+It's recommended to run test withouth source map:
+ng test --code-coverage --sm false
+Or setup in package.json:
+    "test": "ng test --sm false",
+and use mpm test
+*/
+
 describe('HeroesComponent (Isolated)', () => {
     // use this. is still better.
     let component: HeroesComponent;
@@ -31,6 +39,7 @@ describe('HeroesComponent (Isolated)', () => {
         mockedService.getHeroes.and.returnValue(of(HEROES.slice()));
 
         // should return an observable or something that has a subscribe since used in delete.
+        // this.heroService.deleteHero(hero).subscribe();
         mockedService.deleteHero.and.returnValue(of(true));
 
         component.ngOnInit();
@@ -42,6 +51,7 @@ describe('HeroesComponent (Isolated)', () => {
         component.delete(fallenHero);
 
         expect(component.heroes.length).toBe(HEROES.length - 1);
+        expect(component.heroes).not.toContain(fallenHero);
         expect(mockedService.deleteHero).toHaveBeenCalledWith(fallenHero);
     });
 
@@ -52,7 +62,6 @@ describe('HeroesComponent (Isolated)', () => {
 
         component.add(newBlood);
 
-        console.log(HEROES.length);
         expect(component.heroes.length).toBe(HEROES.length + 1);
         expect(component.heroes[3].name).toBe(newBlood);
         expect(mockedService.addHero).toHaveBeenCalled();
