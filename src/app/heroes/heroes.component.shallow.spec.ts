@@ -3,9 +3,14 @@ import { HeroesComponent } from './heroes.component';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA, Input, Component } from '@angular/core';
 import { of } from 'rxjs/observable/of';
+// We import those two imports rather than this too generic:
+// import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/from';
+// for:
+// mockedService.getHeroes.and.returnValue(Observable.from([HEROES]));
 
-
-describe('HeroesComponent (Integration)', () => {
+describe('HeroesComponent (Integration / shallow)', () => {
     let fixture: ComponentFixture<HeroesComponent>;
     let HEROES;
     let mockedService: jasmine.SpyObj<HeroService>;
@@ -34,7 +39,7 @@ describe('HeroesComponent (Integration)', () => {
         // Can't bind to 'hero' since it isn't a known property of 'app-hero'.
         // We can use 
         // schemas: [NO_ERRORS_SCHEMA]
-        // Or mock the Hero component app-hero
+        // Or mock the Hero component app-hero (MockHeroComponent)
         TestBed.configureTestingModule({
             declarations: [HeroesComponent, MockHeroComponent],
             // we tell to use mockedService instead of HeroService
@@ -49,9 +54,11 @@ describe('HeroesComponent (Integration)', () => {
     });
 
     describe('ngOnInit', () => {
-        it('should set heroes correclty from server', () => {
+        it('should set heroes correclty from service', () => {
             // Implementation of getHeroes from our mocked service
-            mockedService.getHeroes.and.returnValue(of(HEROES));
+            // mockedService.getHeroes.and.returnValue(of(HEROES));
+            // Or
+            mockedService.getHeroes.and.returnValue(Observable.from([HEROES]));
 
             // To do only after sets
             fixture.detectChanges();
